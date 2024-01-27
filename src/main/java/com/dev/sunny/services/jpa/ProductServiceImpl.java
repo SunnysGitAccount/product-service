@@ -28,7 +28,7 @@ public class ProductServiceImpl implements ProductService {
         category.ifPresent(product::setCategory);
         product.setIsDeleted(false);
         product.getCategory().setIsDeleted(false);
-        return productRepo.save(product);
+        return this.productRepo.save(product);
     }
 
     @Override
@@ -56,9 +56,7 @@ public class ProductServiceImpl implements ProductService {
             if (StringUtils.hasText(productTitle)) updatedProduct.setTitle(productTitle);
             if (StringUtils.hasText(productDescription)) updatedProduct.setDescription(productDescription);
             if (productPrice != null) updatedProduct.setPrice(productPrice);
-//            if (productCategory != null) updatedProduct.setCategory(productCategory);
-            Optional<Category> category = this.categoryRepo.findByName(productCategory.getName());
-            category.ifPresent(updatedProduct::setCategory);
+            if (productCategory.getName() != null) throw new RuntimeException("Category cannot be updated");
 
             if (isProductDeleted) updatedProduct.setIsDeleted(true);
             if (isCategoryDeleted) updatedProduct.getCategory().setIsDeleted(true);
@@ -69,12 +67,27 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product replaceProduct(Long id, Product product) {
+        Optional<Product> savedProduct = this.productRepo.findById(id);
+        if (savedProduct.isPresent()) {
+            Product updatedProduct = savedProduct.get();
+            updatedProduct.setTitle(product.getTitle());
+            updatedProduct.setDescription(product.getDescription());
+            updatedProduct.setPrice(product.getPrice());
+            if (product.getCategory().getName() != null) throw new RuntimeException("Category cannot be updated");
+            updatedProduct.setIsDeleted(product.getIsDeleted());
+
+            return this.productRepo.save(updatedProduct);
+        }
         return null;
     }
 
     @Override
     public Boolean deleteProduct(Long id) {
-        return null;
+        if (this.productRepo.existsById(id)) {
+            this.productRepo.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     @Override

@@ -15,4 +15,10 @@ public class CustomErrorHandler {
         Map<String, String> errorMap = Map.of("message", exception.getMessage());
         return new ResponseEntity<>(errorMap, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<Map<String, String>> handleException(RuntimeException exception) {
+        Map<String, String> errorMap = Map.of("message", exception.getMessage());
+        return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
+    }
 }
