@@ -20,6 +20,7 @@ public class AuthenticationCommons {
 
     public boolean validateToken(String token) {
         final String VALIDATE_TOKEN_RESOURCE = "/validate";
+        if (token == null) return false;
         headers.set("token", token);
 
         ResponseEntity<UserResponseDto> response = restTemplate.postForEntity(AUTH_URL + VALIDATE_TOKEN_RESOURCE,
