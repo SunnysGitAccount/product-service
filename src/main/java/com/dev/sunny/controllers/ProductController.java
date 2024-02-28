@@ -1,6 +1,5 @@
 package com.dev.sunny.controllers;
 
-import com.dev.sunny.commons.AuthenticationCommons;
 import com.dev.sunny.exceptions.NoProductFoundException;
 import com.dev.sunny.models.Product;
 import com.dev.sunny.services.ProductService;
@@ -18,12 +17,10 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
     private final ObservationRegistry registry;
-    private final AuthenticationCommons authCommons;
 
-    public ProductController(ProductService productService, ObservationRegistry registry, AuthenticationCommons authCommons) {
+    public ProductController(ProductService productService, ObservationRegistry registry) {
         this.productService = productService;
         this.registry = registry;
-        this.authCommons = authCommons;
     }
 
     @PostMapping("/create")
@@ -37,9 +34,7 @@ public class ProductController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Product>> getAllProducts(@RequestHeader String token) {
-        if (!authCommons.validateToken(token)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-
+    public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> allProducts = Observation.createNotStarted("getAllProducts", this.registry)
                 .observe(this.productService::getAllProducts);
         return new ResponseEntity<>(allProducts, HttpStatus.OK);
