@@ -50,16 +50,14 @@ public class ProductServiceImpl implements ProductService {
             String productDescription = product.getDescription();
             Double productPrice = product.getPrice();
             Category productCategory = product.getCategory();
-            Boolean isProductDeleted = product.getIsDeleted();
-            Boolean isCategoryDeleted = productCategory.getIsDeleted();
+            boolean isProductDeleted = product.getIsDeleted() != null ? product.getIsDeleted() : false;
 
             if (StringUtils.hasText(productTitle)) updatedProduct.setTitle(productTitle);
             if (StringUtils.hasText(productDescription)) updatedProduct.setDescription(productDescription);
             if (productPrice != null) updatedProduct.setPrice(productPrice);
-            if (productCategory.getName() != null) throw new RuntimeException("Category cannot be updated");
+            if (productCategory != null) throw new RuntimeException("Category cannot be updated");
 
             if (isProductDeleted) updatedProduct.setIsDeleted(true);
-            if (isCategoryDeleted) updatedProduct.getCategory().setIsDeleted(true);
             return this.productRepo.save(updatedProduct);
         }
         return null;
@@ -73,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
             updatedProduct.setTitle(product.getTitle());
             updatedProduct.setDescription(product.getDescription());
             updatedProduct.setPrice(product.getPrice());
-            if (product.getCategory().getName() != null) throw new RuntimeException("Category cannot be updated");
+            if (product.getCategory() != null && product.getCategory().getName() != null) throw new RuntimeException("Category cannot be updated");
             updatedProduct.setIsDeleted(product.getIsDeleted());
 
             return this.productRepo.save(updatedProduct);

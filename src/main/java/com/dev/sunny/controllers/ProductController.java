@@ -5,6 +5,7 @@ import com.dev.sunny.models.Product;
 import com.dev.sunny.services.ProductService;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,15 +14,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/api/products")
 public class ProductController {
     private final ProductService productService;
     private final ObservationRegistry registry;
-
-    public ProductController(ProductService productService, ObservationRegistry registry) {
-        this.productService = productService;
-        this.registry = registry;
-    }
 
     @PostMapping("/create")
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {

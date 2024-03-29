@@ -12,13 +12,12 @@ public class SpringSecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/api/products/create").hasAuthority("SCOPE_ADMIN")
                         .requestMatchers("/api/products/all",
                                 "/api/products/create",
                                 "/api/products/delete/{id}",
                                 "/api/products/replace/{id}",
                                 "/api/products/update/{id}").authenticated()
-                        .requestMatchers("/api/products/category/**").permitAll()
+                        .requestMatchers("/api/products/category/**", "/actuator", "/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer((oauth2) -> oauth2
